@@ -177,7 +177,7 @@ function drawText(
   yPosition: number
 ): void {
   const maxWidth = CANVAS_WIDTH - 160; // 80px padding on each side
-  const fontSize = 72; // Increased from 48 to 72
+  const fontSize = customization.fontSize || 72; // Default to 72 if not set
   const lineHeight = fontSize * 1.4;
   const outlineWidth = customization.outlineWidth || 5; // Default to 5 if not set
 
@@ -287,7 +287,7 @@ export async function createCarouselSlide(
   // Calculate text height for positioning (before drawing)
   // Save context state
   ctx.save();
-  const fontSize = 72;
+  const fontSize = customization.fontSize || 72; // Default to 72 if not set
   const lineHeight = fontSize * 1.4;
   ctx.font = `${fontSize}px ${getFontStyle(customization.fontStyle)}`;
   const maxWidth = CANVAS_WIDTH - 160;

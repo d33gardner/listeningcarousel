@@ -16,6 +16,7 @@ const DEFAULT_CUSTOMIZATION: TextCustomizationType = {
   backgroundOverlay: false,
   overlayOpacity: 0.5,
   outlineWidth: 5, // Default outline width (3-8 pixels)
+  fontSize: 72, // Default font size (72-144 pixels)
 };
 
 function App() {

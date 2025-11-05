@@ -43,6 +43,13 @@ export default function TextCustomization({
     });
   };
 
+  const handleFontSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onCustomizationChange({
+      ...customization,
+      fontSize: parseInt(event.target.value, 10),
+    });
+  };
+
   return (
     <div className="text-customization">
       <h2>Step 3: Customize Appearance</h2>
@@ -128,6 +135,27 @@ export default function TextCustomization({
             >
               Bottom
             </button>
+          </div>
+        </div>
+
+        <div className="customization-group">
+          <label>
+            Text Size: {customization.fontSize || 72}px
+          </label>
+          <div className="outline-control">
+            <input
+              type="range"
+              min="72"
+              max="144"
+              step="1"
+              value={customization.fontSize || 72}
+              onChange={handleFontSizeChange}
+              className="outline-slider"
+            />
+            <div className="slider-labels">
+              <span>72px</span>
+              <span>144px</span>
+            </div>
           </div>
         </div>
 

@@ -5,6 +5,7 @@ export interface TextCustomization {
   backgroundOverlay: boolean;
   overlayOpacity: number;
   outlineWidth: number; // 5-30 pixels
+  fontSize: number; // 72-144 pixels
 }
 
 export interface CarouselSlide {
