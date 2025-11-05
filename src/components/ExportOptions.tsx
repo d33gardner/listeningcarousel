@@ -5,9 +5,16 @@ import './ExportOptions.css';
 interface ExportOptionsProps {
   slides: string[];
   isGenerating?: boolean;
+  showNumbers: boolean;
+  onShowNumbersChange: (show: boolean) => void;
 }
 
-export default function ExportOptions({ slides, isGenerating }: ExportOptionsProps) {
+export default function ExportOptions({ 
+  slides, 
+  isGenerating,
+  showNumbers,
+  onShowNumbersChange
+}: ExportOptionsProps) {
   const [isExporting, setIsExporting] = useState(false);
   const [exportType, setExportType] = useState<'individual' | 'zip' | null>(null);
 
@@ -100,6 +107,18 @@ export default function ExportOptions({ slides, isGenerating }: ExportOptionsPro
             </>
           )}
         </button>
+      </div>
+
+      <div className="export-options-controls">
+        <label className="export-checkbox-label">
+          <input
+            type="checkbox"
+            checked={showNumbers}
+            onChange={(e) => onShowNumbersChange(e.target.checked)}
+            disabled={isGenerating}
+          />
+          <span>Show numbered circles (for testing)</span>
+        </label>
       </div>
 
       <div className="export-info">

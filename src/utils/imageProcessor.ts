@@ -235,13 +235,41 @@ function drawText(
 }
 
 /**
+ * Draw numbered circle in top-right corner
+ */
+function drawNumberCircle(
+  ctx: CanvasRenderingContext2D,
+  slideNumber: number
+): void {
+  const circleRadius = 72; // 144px diameter / 2
+  const circleX = CANVAS_WIDTH - 40 - circleRadius; // 40px offset from right
+  const circleY = 40 + circleRadius; // 40px offset from top
+  const numberColor = '#000000'; // Black text on yellow circle
+  const circleColor = '#eecb5f'; // Yellow circle
+  
+  // Draw circle
+  ctx.beginPath();
+  ctx.arc(circleX, circleY, circleRadius, 0, 2 * Math.PI);
+  ctx.fillStyle = circleColor;
+  ctx.fill();
+  
+  // Draw number text
+  ctx.fillStyle = numberColor;
+  ctx.font = 'bold 72px Arial, sans-serif'; // Larger font for bigger circle
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(String(slideNumber), circleX, circleY);
+}
+
+/**
  * Process image and create carousel slide
  */
 export async function createCarouselSlide(
   photo: File | string,
   text: string,
   customization: TextCustomization,
-  _slideNumber: number
+  slideNumber: number,
+  showNumbers: boolean = false
 ): Promise<string> {
   // Create canvas
   const canvas = document.createElement('canvas');
@@ -301,6 +329,11 @@ export async function createCarouselSlide(
   const textY = getTextPosition(customization.textPosition, textHeight, outlineWidth);
   drawText(ctx, text, customization, textY);
 
+  // Draw numbered circle if enabled
+  if (showNumbers) {
+    drawNumberCircle(ctx, slideNumber);
+  }
+
   // Convert to data URL
   return canvas.toDataURL('image/jpeg', 0.92);
 }
@@ -311,7 +344,8 @@ export async function createCarouselSlide(
 export async function generateCarouselSlides(
   photo: File | string,
   textSegments: string[],
-  customization: TextCustomization
+  customization: TextCustomization,
+  showNumbers: boolean = false
 ): Promise<string[]> {
   const slides: string[] = [];
 
@@ -320,7 +354,8 @@ export async function generateCarouselSlides(
       photo,
       textSegments[i],
       customization,
-      i + 1
+      i + 1,
+      showNumbers
     );
     slides.push(slide);
   }

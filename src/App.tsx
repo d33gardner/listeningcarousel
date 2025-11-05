@@ -29,6 +29,7 @@ function App() {
   );
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showNumbers, setShowNumbers] = useState(false);
 
   // Generate carousel when dependencies change
   const generateCarousel = useCallback(async () => {
@@ -57,7 +58,8 @@ function App() {
       const generatedSlides = await generateCarouselSlides(
         photo,
         textSegments,
-        customization
+        customization,
+        showNumbers
       );
 
       setSlides(generatedSlides);
@@ -68,7 +70,7 @@ function App() {
     } finally {
       setIsGenerating(false);
     }
-  }, [photo, storyText, customization]);
+  }, [photo, storyText, customization, showNumbers]);
 
   // Generate carousel when dependencies change (with debounce for text changes)
   useEffect(() => {
@@ -123,7 +125,12 @@ function App() {
 
           <CarouselPreview slides={slides} isLoading={isGenerating} />
 
-          <ExportOptions slides={slides} isGenerating={isGenerating} />
+          <ExportOptions 
+            slides={slides} 
+            isGenerating={isGenerating}
+            showNumbers={showNumbers}
+            onShowNumbersChange={setShowNumbers}
+          />
         </div>
       </main>
 
