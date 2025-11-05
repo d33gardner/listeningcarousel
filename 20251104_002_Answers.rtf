@@ -1,0 +1,55 @@
+## Technical architecture
+
+1. Backend approach:
+
+   - c) No backend initially (client-side only with browser APIs)
+
+2. Image processing:
+   - a) Canvas API (client-side, browser-based)
+
+
+## User flow & features
+
+3. Photo upload:
+
+   - c) Single photo with option to upload different photos later
+
+4. Text splitting parameters:
+   - Maximum characters per slide (e.g., 100–125)
+   - Minimum slides (e.g., 8)
+   - Maximum slides (20 as noted)
+
+5. Export format
+   - c) Both options
+
+## MVP scope
+
+6. User accounts:
+   - a) No accounts for MVP (anonymous generation)
+
+
+7. Text customization (MVP):
+   - Which options to include: font style (2–3 options), text color, text position (top/center/bottom), background overlay (optional)
+   These will work
+
+## Docker setup
+
+8. Docker approach:
+   - a) Single container (frontend + backend)
+
+## Suggestions - updated a little
+
+1. Start with client-side processing (Canvas API) to simplify MVP and avoid backend complexity.
+2. Aspect ratio: Use 4:5.  1080x1350.
+3. Story splitting: split on sentences, but if a sentence exceeds X characters, split on punctuation (periods, commas, semicolons).
+4. Default text styling: 2–3 font options (Instagram-style), white/black text with optional shadow for readability.
+5. File naming: `carousel_01.jpg`, `carousel_02.jpg`, etc., for easy organization.
+
+
+Once you answer these, I’ll create a development plan with:
+- Tech stack
+- Project structure
+- Docker setup
+- MVP features
+- Development workflow
+- Deployment path (GitHub → Netlify)
