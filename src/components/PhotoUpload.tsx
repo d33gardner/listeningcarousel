@@ -8,7 +8,7 @@ interface PhotoUploadProps {
 }
 
 export default function PhotoUpload({
-  photo,
+  photo: _photo,
   photoPreview,
   onPhotoChange,
 }: PhotoUploadProps) {

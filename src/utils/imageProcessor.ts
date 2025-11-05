@@ -241,7 +241,7 @@ export async function createCarouselSlide(
   photo: File | string,
   text: string,
   customization: TextCustomization,
-  slideNumber: number
+  _slideNumber: number
 ): Promise<string> {
   // Create canvas
   const canvas = document.createElement('canvas');
