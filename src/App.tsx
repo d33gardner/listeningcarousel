@@ -4,7 +4,7 @@ import TextInput from "./components/TextInput";
 import TextCustomization from "./components/TextCustomization";
 import CarouselPreview from "./components/CarouselPreview";
 import ExportOptions from "./components/ExportOptions";
-import { splitStory } from "./utils/textSplitter";
+import { splitStory, getFirstSentence } from "./utils/textSplitter";
 import { generateCarouselSlides } from "./utils/imageProcessor";
 import type { TextCustomization as TextCustomizationType } from "./types";
 import "./App.css";
@@ -22,6 +22,7 @@ const DEFAULT_CUSTOMIZATION: TextCustomizationType = {
 function App() {
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [title, setTitle] = useState("");
   const [storyText, setStoryText] = useState("");
   const [slides, setSlides] = useState<string[]>([]);
   const [customization, setCustomization] = useState<TextCustomizationType>(
@@ -42,14 +43,56 @@ function App() {
     setError(null);
 
     try {
-      // Split story into segments
-      const textSegments = splitStory(storyText, {
-        maxCharsPerSlide: 125,
-        minSlides: 8,
-        maxSlides: 20,
-      });
+      // Determine text for first slide and remaining story text
+      let firstSlideText: string;
+      let remainingStoryText: string;
 
-      if (textSegments.length === 0) {
+      if (title.trim()) {
+        // Title provided: use title on first slide, all story on remaining slides
+        firstSlideText = title.trim();
+        remainingStoryText = storyText;
+      } else {
+        // No title: extract first sentence for first slide, rest for remaining slides
+        const firstSentence = getFirstSentence(storyText);
+        firstSlideText = firstSentence;
+
+        // Remove first sentence from story text for remaining slides
+        if (firstSentence) {
+          const trimmedStory = storyText.trim();
+          const firstSentenceIndex = trimmedStory.indexOf(firstSentence);
+          if (firstSentenceIndex !== -1) {
+            remainingStoryText = trimmedStory
+              .substring(firstSentenceIndex + firstSentence.length)
+              .trim();
+          } else {
+            remainingStoryText = storyText;
+          }
+        } else {
+          remainingStoryText = storyText;
+        }
+      }
+
+      // Split remaining story into segments
+      const textSegments = remainingStoryText.trim()
+        ? splitStory(remainingStoryText, {
+            maxCharsPerSlide: 125,
+            minSlides: 8,
+            maxSlides: 20,
+          })
+        : [];
+
+      // Prepare slides: first slide with title/first sentence, rest with story segments
+      const slideTexts: string[] = [];
+
+      // Add title/first sentence as first slide
+      if (firstSlideText) {
+        slideTexts.push(firstSlideText);
+      }
+
+      // Add all story segments to remaining slides
+      slideTexts.push(...textSegments);
+
+      if (slideTexts.length === 0) {
         setSlides([]);
         return;
       }
@@ -57,7 +100,7 @@ function App() {
       // Generate slides
       const generatedSlides = await generateCarouselSlides(
         photo,
-        textSegments,
+        slideTexts,
         customization,
         showNumbers
       );
@@ -70,7 +113,7 @@ function App() {
     } finally {
       setIsGenerating(false);
     }
-  }, [photo, storyText, customization, showNumbers]);
+  }, [photo, title, storyText, customization, showNumbers]);
 
   // Generate carousel when dependencies change (with debounce for text changes)
   useEffect(() => {
@@ -116,7 +159,12 @@ function App() {
             onPhotoChange={handlePhotoChange}
           />
 
-          <TextInput storyText={storyText} onTextChange={setStoryText} />
+          <TextInput
+            title={title}
+            storyText={storyText}
+            onTitleChange={setTitle}
+            onTextChange={setStoryText}
+          />
 
           <TextCustomization
             customization={customization}
@@ -125,8 +173,8 @@ function App() {
 
           <CarouselPreview slides={slides} isLoading={isGenerating} />
 
-          <ExportOptions 
-            slides={slides} 
+          <ExportOptions
+            slides={slides}
             isGenerating={isGenerating}
             showNumbers={showNumbers}
             onShowNumbersChange={setShowNumbers}

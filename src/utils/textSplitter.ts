@@ -44,6 +44,26 @@ function splitIntoSentences(text: string): string[] {
 }
 
 /**
+ * Extract the first sentence from text (before splitting)
+ */
+export function getFirstSentence(text: string): string {
+  if (!text || text.trim().length === 0) {
+    return '';
+  }
+
+  const trimmedText = text.trim();
+  const sentenceRegex = /([.!?]+)\s+/;
+  const match = trimmedText.match(sentenceRegex);
+
+  if (match && match.index !== undefined) {
+    return trimmedText.substring(0, match.index + match[1].length).trim();
+  }
+
+  // If no sentence ending found, return the whole text (it's a single sentence)
+  return trimmedText;
+}
+
+/**
  * Split long sentence on punctuation marks
  */
 function splitLongSentence(sentence: string, maxChars: number): string[] {

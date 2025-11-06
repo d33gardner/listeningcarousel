@@ -13,6 +13,50 @@
   gap: 0.5rem;
 }
 
+.input-container label {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+.input-container label:first-of-type {
+  margin-top: 0;
+}
+
+.title-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.title-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.title-input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.title-input::placeholder {
+  color: #999;
+}
+
+.title-hint {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+  font-style: italic;
+}
+
 .story-textarea {
   width: 100%;
   padding: 1rem;
