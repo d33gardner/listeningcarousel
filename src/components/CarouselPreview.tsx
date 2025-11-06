@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './CarouselPreview.css';
 
 interface CarouselPreviewProps {
@@ -8,6 +8,49 @@ interface CarouselPreviewProps {
 
 export default function CarouselPreview({ slides, isLoading }: CarouselPreviewProps) {
   const [selectedSlide, setSelectedSlide] = useState<number | null>(null);
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (selectedSlide !== null) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedSlide]);
+
+  // Handle swipe gestures
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchEndX.current = null;
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current || selectedSlide === null) return;
+
+    const distance = touchStartX.current - touchEndX.current;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && selectedSlide < slides.length - 1) {
+      setSelectedSlide(selectedSlide + 1);
+    }
+    if (isRightSwipe && selectedSlide > 0) {
+      setSelectedSlide(selectedSlide - 1);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -56,8 +99,15 @@ export default function CarouselPreview({ slides, isLoading }: CarouselPreviewPr
         <div
           className="modal-overlay"
           onClick={() => setSelectedSlide(null)}
+          ref={modalRef}
         >
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
             <button
               className="modal-close"
               onClick={() => setSelectedSlide(null)}
@@ -91,6 +141,14 @@ export default function CarouselPreview({ slides, isLoading }: CarouselPreviewPr
                 ›
               </button>
             )}
+            <div className="modal-indicators">
+              {slides.map((_, index) => (
+                <div
+                  key={index}
+                  className={`modal-indicator ${index === selectedSlide ? 'active' : ''}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       )}

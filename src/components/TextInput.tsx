@@ -40,6 +40,8 @@ export default function TextInput({ title, storyText, onTitleChange, onTextChang
             onChange={handleTitleChange}
             placeholder="Enter a title for the first slide (or leave blank to use the first sentence)"
             className="title-input"
+            inputMode="text"
+            autoComplete="off"
           />
           <p className="title-hint">If left blank, the first sentence of your story will be used on the first slide.</p>
         </div>
@@ -52,6 +54,8 @@ export default function TextInput({ title, storyText, onTitleChange, onTextChang
           placeholder="Type your story here... The text will be automatically split into slides (8-20 slides)."
           className="story-textarea"
           rows={10}
+          inputMode="text"
+          autoComplete="off"
         />
         
         <div className="text-stats">

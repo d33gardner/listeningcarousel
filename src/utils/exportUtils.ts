@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import { detectPlatform, canShareFiles } from './platformDetection';
 
 /**
  * Convert data URL to Blob
@@ -15,6 +16,77 @@ function dataURLtoBlob(dataURL: string): Blob {
   }
 
   return new Blob([u8arr], { type: mime });
+}
+
+/**
+ * Share a single image using Web Share API (Android)
+ */
+export async function shareImage(dataURL: string, filename: string): Promise<boolean> {
+  if (!canShareFiles()) {
+    return false;
+  }
+
+  try {
+    const blob = dataURLtoBlob(dataURL);
+    const file = new File([blob], filename, { type: blob.type });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: filename,
+        text: 'Carousel image',
+      });
+      return true;
+    }
+  } catch (error) {
+    // User cancelled or error occurred
+    if ((error as Error).name !== 'AbortError') {
+      console.error('Error sharing image:', error);
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Share all images one by one (Android)
+ */
+export async function shareAllImages(slides: string[]): Promise<void> {
+  if (!canShareFiles()) {
+    throw new Error('Web Share API not supported');
+  }
+
+  for (let index = 0; index < slides.length; index++) {
+    const slideNumber = String(index + 1).padStart(2, '0');
+    const filename = `carousel_${slideNumber}.jpg`;
+    
+    try {
+      await shareImage(slides[index], filename);
+      // Small delay between shares
+      if (index < slides.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    } catch (error) {
+      console.error(`Error sharing image ${index + 1}:`, error);
+      // Continue with next image even if one fails
+    }
+  }
+}
+
+/**
+ * Open image in new tab for iOS save flow
+ */
+export function openImageInNewTab(dataURL: string): void {
+  const blob = dataURLtoBlob(dataURL);
+  const url = URL.createObjectURL(blob);
+  const newWindow = window.open(url, '_blank');
+  
+  // Clean up URL after a delay
+  setTimeout(() => {
+    if (newWindow) {
+      URL.revokeObjectURL(url);
+    }
+  }, 1000);
 }
 
 /**
@@ -36,15 +108,31 @@ export function downloadImage(dataURL: string, filename: string): void {
  * Download all images individually
  */
 export function downloadAllImages(slides: string[]): void {
-  slides.forEach((slide, index) => {
-    const slideNumber = String(index + 1).padStart(2, '0');
-    const filename = `carousel_${slideNumber}.jpg`;
-    
-    // Small delay to avoid browser blocking multiple downloads
-    setTimeout(() => {
-      downloadImage(slide, filename);
-    }, index * 100);
-  });
+  const platform = detectPlatform();
+  
+  // On iOS, download all first, then user can save manually
+  if (platform === 'ios') {
+    slides.forEach((slide, index) => {
+      const slideNumber = String(index + 1).padStart(2, '0');
+      const filename = `carousel_${slideNumber}.jpg`;
+      
+      // Small delay to avoid browser blocking multiple downloads
+      setTimeout(() => {
+        downloadImage(slide, filename);
+      }, index * 100);
+    });
+  } else {
+    // Desktop and Android: standard download
+    slides.forEach((slide, index) => {
+      const slideNumber = String(index + 1).padStart(2, '0');
+      const filename = `carousel_${slideNumber}.jpg`;
+      
+      // Small delay to avoid browser blocking multiple downloads
+      setTimeout(() => {
+        downloadImage(slide, filename);
+      }, index * 100);
+    });
+  }
 }
 
 /**

@@ -25,7 +25,8 @@
 .export-button {
   flex: 1;
   min-width: 200px;
-  padding: 1rem 2rem;
+  min-height: 44px;
+  padding: 12px 24px;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
@@ -36,6 +37,7 @@
   justify-content: center;
   gap: 0.5rem;
   transition: all 0.2s;
+  touch-action: manipulation;
 }
 
 .export-individual {
@@ -56,6 +58,17 @@
 
 .export-zip:hover:not(:disabled) {
   background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.export-share {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.export-share:hover:not(:disabled) {
+  background-color: #138496;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -101,10 +114,13 @@
 }
 
 .export-checkbox-label input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
   cursor: pointer;
   accent-color: #007bff;
+  touch-action: manipulation;
 }
 
 .export-checkbox-label input[type="checkbox"]:disabled {
@@ -134,6 +150,92 @@
   color: #007bff;
 }
 
+/* iOS Save Helper */
+.ios-save-helper {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.ios-save-helper h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.save-helper-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.save-helper-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.save-helper-image {
+  position: relative;
+  aspect-ratio: 4/5;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.save-helper-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.save-helper-number {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.save-helper-btn {
+  padding: 8px 12px;
+  min-height: 44px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  touch-action: manipulation;
+}
+
+.save-helper-btn:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.save-helper-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.save-helper-note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666;
+  font-style: italic;
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .export-buttons {
     flex-direction: column;
@@ -141,6 +243,27 @@
 
   .export-button {
     width: 100%;
+    padding: 14px 20px;
+  }
+
+  .save-helper-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .save-helper-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ios-save-helper {
+    padding: 0.875rem;
+  }
+
+  .save-helper-btn {
+    font-size: 0.85rem;
+    padding: 10px 12px;
   }
 }
 

@@ -70,6 +70,7 @@ export default function PhotoUpload({
             onChange={handleFileChange}
             className="file-input"
             id="photo-upload-input"
+            capture="environment"
           />
           <label htmlFor="photo-upload-input" className="upload-label">
             <div className="upload-icon">📷</div>

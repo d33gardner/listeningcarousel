@@ -1,0 +1,111 @@
+.export-instructions {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f0f8ff;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+
+.instructions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.instructions-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.instructions-close {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  min-width: 32px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  touch-action: manipulation;
+}
+
+.instructions-close:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.instructions-content {
+  color: #555;
+}
+
+.instructions-steps {
+  margin: 0 0 0.75rem 0;
+  padding-left: 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.instructions-steps li {
+  margin-bottom: 0.5rem;
+}
+
+.instructions-steps li strong {
+  color: #007bff;
+}
+
+.instructions-note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+}
+
+.export-instructions-toggle {
+  margin-top: 1rem;
+}
+
+.instructions-toggle-btn {
+  padding: 10px 16px;
+  min-height: 44px;
+  background-color: #f0f8ff;
+  color: #007bff;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  touch-action: manipulation;
+  width: 100%;
+}
+
+.instructions-toggle-btn:hover {
+  background-color: #e0f0ff;
+}
+
+@media (max-width: 480px) {
+  .export-instructions {
+    padding: 0.875rem;
+  }
+
+  .instructions-header h3 {
+    font-size: 0.95rem;
+  }
+
+  .instructions-steps {
+    font-size: 0.9rem;
+    padding-left: 1.25rem;
+  }
+
+  .instructions-note {
+    font-size: 0.85rem;
+  }
+}
+
