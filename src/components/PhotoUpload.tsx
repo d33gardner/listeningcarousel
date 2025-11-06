@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { detectPlatform } from '../utils/platformDetection';
 import './PhotoUpload.css';
 
 interface PhotoUploadProps {
@@ -13,7 +14,12 @@ export default function PhotoUpload({
   onPhotoChange,
 }: PhotoUploadProps) {
   const [error, setError] = useState<string | null>(null);
+  const [platform, setPlatform] = useState<'ios' | 'android' | 'desktop'>('desktop');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setPlatform(detectPlatform());
+  }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -78,6 +84,20 @@ export default function PhotoUpload({
             </div>
             <div className="upload-hint">PNG, JPG, JPEG up to 10MB</div>
           </label>
+          {platform === 'ios' && !photoPreview && (
+            <div className="upload-instructions">
+              <p className="instructions-text">
+                💡 <strong>Tip:</strong> Select "Photo Library" to access your iCloud Photos
+              </p>
+            </div>
+          )}
+          {platform === 'android' && !photoPreview && (
+            <div className="upload-instructions">
+              <p className="instructions-text">
+                💡 <strong>Tip:</strong> Select "Gallery" or browse to Google Photos to access your photos
+              </p>
+            </div>
+          )}
         </div>
       ) : (
         <div className="photo-preview-container">

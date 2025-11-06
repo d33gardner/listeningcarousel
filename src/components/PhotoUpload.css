@@ -128,6 +128,26 @@
   border: 1px solid #fcc;
 }
 
+/* Upload Instructions */
+.upload-instructions {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #f0f8ff;
+  border-radius: 6px;
+  border-left: 3px solid #007bff;
+}
+
+.instructions-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.instructions-text strong {
+  color: #007bff;
+}
+
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .upload-area {
@@ -149,6 +169,15 @@
   .photo-preview img {
     max-height: 300px;
   }
+
+  .upload-instructions {
+    margin-top: 0.875rem;
+    padding: 0.625rem 0.875rem;
+  }
+
+  .instructions-text {
+    font-size: 0.85rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -159,6 +188,15 @@
   .change-button {
     width: 100%;
     padding: 14px 20px;
+  }
+
+  .upload-instructions {
+    margin-top: 0.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .instructions-text {
+    font-size: 0.8rem;
   }
 }
 
