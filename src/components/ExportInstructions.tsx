@@ -28,7 +28,10 @@ export default function ExportInstructions({ onClose }: ExportInstructionsProps)
         <h3>📱 How to Save to Photos</h3>
         <button
           type="button"
-          onClick={() => setShowInstructions(false)}
+          onClick={() => {
+            setShowInstructions(false);
+            onClose();
+          }}
           className="instructions-close"
           aria-label="Hide instructions"
         >
