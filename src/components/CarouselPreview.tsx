@@ -4,13 +4,29 @@ import './CarouselPreview.css';
 interface CarouselPreviewProps {
   slides: string[];
   isLoading?: boolean;
+  regeneratingSlides?: Set<number>;
+  customSlidePhotos?: Map<number, string>;
+  onSlidePhotoChange?: (index: number, file: File | null, preview: string | null) => void;
+  onResetSlidePhoto?: (index: number) => void;
+  onApplyPhotoToAll?: (sourceIndex: number) => void;
+  onRegenerateAll?: () => void;
 }
 
-export default function CarouselPreview({ slides, isLoading }: CarouselPreviewProps) {
+export default function CarouselPreview({
+  slides,
+  isLoading,
+  regeneratingSlides = new Set(),
+  customSlidePhotos = new Map(),
+  onSlidePhotoChange,
+  onResetSlidePhoto,
+  onApplyPhotoToAll,
+  onRegenerateAll,
+}: CarouselPreviewProps) {
   const [selectedSlide, setSelectedSlide] = useState<number | null>(null);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const fileInputRefs = useRef<Map<number, HTMLInputElement>>(new Map());
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -52,6 +68,59 @@ export default function CarouselPreview({ slides, isLoading }: CarouselPreviewPr
     }
   };
 
+  const handleFileChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !onSlidePhotoChange) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Image size must be less than 10MB');
+      return;
+    }
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const preview = e.target?.result as string;
+      onSlidePhotoChange(index, file, preview);
+    };
+    reader.onerror = () => {
+      alert('Error reading image file');
+    };
+    reader.readAsDataURL(file);
+
+    // Reset input
+    event.target.value = '';
+  };
+
+  const handleChangePhotoClick = (index: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const input = fileInputRefs.current.get(index);
+    if (input) {
+      input.click();
+    }
+  };
+
+  const handleResetClick = (index: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onResetSlidePhoto) {
+      onResetSlidePhoto(index);
+    }
+  };
+
+  const handleApplyToAllClick = (index: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onApplyPhotoToAll) {
+      onApplyPhotoToAll(index);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="carousel-preview">
@@ -82,18 +151,92 @@ export default function CarouselPreview({ slides, isLoading }: CarouselPreviewPr
       <div className="preview-grid">
         {slides.map((slide, index) => {
           const slideNumber = String(index + 1).padStart(2, '0');
+          const hasCustomPhoto = customSlidePhotos.has(index);
+          const isRegenerating = regeneratingSlides.has(index);
+          
           return (
-            <div
-              key={index}
-              className="preview-card"
-              onClick={() => setSelectedSlide(index)}
-            >
-              <div className="slide-number">{slideNumber}</div>
-              <img src={slide} alt={`Slide ${slideNumber}`} />
+            <div key={index} className="preview-card-wrapper">
+              <div
+                className="preview-card"
+                onClick={() => setSelectedSlide(index)}
+              >
+                <div className="slide-number">{slideNumber}</div>
+                {hasCustomPhoto && (
+                  <div className="custom-photo-indicator" title="Custom photo">
+                    📷
+                  </div>
+                )}
+                {isRegenerating && (
+                  <div className="slide-loading-overlay">
+                    <div className="slide-loading-spinner"></div>
+                  </div>
+                )}
+                <img src={slide} alt={`Slide ${slideNumber}`} />
+              </div>
+              <div className="preview-card-actions" onClick={(e) => e.stopPropagation()}>
+                <input
+                  ref={(el) => {
+                    if (el) {
+                      fileInputRefs.current.set(index, el);
+                    } else {
+                      fileInputRefs.current.delete(index);
+                    }
+                  }}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileChange(index, e)}
+                  className="file-input-hidden"
+                  id={`slide-photo-input-${index}`}
+                />
+                <button
+                  type="button"
+                  className="preview-action-btn change-photo-btn"
+                  onClick={(e) => handleChangePhotoClick(index, e)}
+                  disabled={isRegenerating}
+                  aria-label="Change photo"
+                >
+                  Change Photo
+                </button>
+                {hasCustomPhoto && (
+                  <>
+                    <button
+                      type="button"
+                      className="preview-action-btn reset-photo-btn"
+                      onClick={(e) => handleResetClick(index, e)}
+                      disabled={isRegenerating}
+                      aria-label="Reset to default photo"
+                    >
+                      Reset
+                    </button>
+                    <button
+                      type="button"
+                      className="preview-action-btn apply-all-btn"
+                      onClick={(e) => handleApplyToAllClick(index, e)}
+                      disabled={isRegenerating}
+                      aria-label="Apply this photo to all slides"
+                    >
+                      Apply to All
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           );
         })}
       </div>
+
+      {slides.length > 0 && onRegenerateAll && (
+        <div className="regenerate-all-container">
+          <button
+            type="button"
+            className="regenerate-all-btn"
+            onClick={onRegenerateAll}
+            disabled={isLoading || regeneratingSlides.size > 0}
+          >
+            Regenerate All Slides
+          </button>
+        </div>
+      )}
 
       {selectedSlide !== null && (
         <div

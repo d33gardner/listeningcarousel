@@ -98,6 +98,11 @@
   }
 }
 
+.preview-card-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .preview-card {
   position: relative;
   aspect-ratio: 4/5;
@@ -323,6 +328,179 @@
 @media (min-width: 769px) {
   .modal-indicators {
     display: none;
+  }
+}
+
+/* Custom photo indicator */
+.custom-photo-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Slide loading overlay */
+.slide-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  border-radius: 8px;
+}
+
+.slide-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Preview card actions */
+.preview-card-actions {
+  margin-top: 0.5rem;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.preview-action-btn {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  white-space: nowrap;
+  touch-action: manipulation;
+  flex: 0 1 auto;
+  min-width: fit-content;
+}
+
+.preview-action-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: white;
+}
+
+.preview-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.change-photo-btn {
+  background: #007bff;
+  color: white;
+}
+
+.change-photo-btn:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.reset-photo-btn {
+  background: rgba(255, 193, 7, 0.9);
+  color: #333;
+}
+
+.reset-photo-btn:hover:not(:disabled) {
+  background: #ffc107;
+}
+
+.apply-all-btn {
+  background: rgba(40, 167, 69, 0.9);
+  color: white;
+}
+
+.apply-all-btn:hover:not(:disabled) {
+  background: #28a745;
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+/* Regenerate all container */
+.regenerate-all-container {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.regenerate-all-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  touch-action: manipulation;
+}
+
+.regenerate-all-btn:hover:not(:disabled) {
+  background: #5a6268;
+}
+
+.regenerate-all-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .preview-card-actions {
+    gap: 0.4rem;
+  }
+
+  .preview-action-btn {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .custom-photo-indicator {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .regenerate-all-btn {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .preview-card-actions {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .preview-action-btn {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.5rem;
+    width: 100%;
+  }
+
+  .regenerate-all-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
   }
 }
 

@@ -145,6 +145,31 @@
   min-height: 22px;
   cursor: pointer;
   touch-action: manipulation;
+  background-color: white;
+  border: 1px solid black;
+  outline: 1px solid black;
+  outline-offset: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+}
+
+.customization-group input[type="checkbox"]:checked {
+  background-color: white;
+  border: 1px solid black;
+}
+
+.customization-group input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1;
 }
 
 /* Mobile optimizations */

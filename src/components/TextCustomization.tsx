@@ -4,11 +4,17 @@ import './TextCustomization.css';
 interface TextCustomizationProps {
   customization: TextCustomization;
   onCustomizationChange: (customization: TextCustomization) => void;
+  showNumbers?: boolean;
+  onShowNumbersChange?: (show: boolean) => void;
+  isGenerating?: boolean;
 }
 
 export default function TextCustomization({
   customization,
   onCustomizationChange,
+  showNumbers = false,
+  onShowNumbersChange,
+  isGenerating = false,
 }: TextCustomizationProps) {
   const handleFontStyleChange = (fontStyle: 'modern' | 'classic' | 'bold') => {
     onCustomizationChange({ ...customization, fontStyle });
@@ -205,6 +211,20 @@ export default function TextCustomization({
             </div>
           )}
         </div>
+
+        {onShowNumbersChange && (
+          <div className="customization-group">
+            <label>
+              <input
+                type="checkbox"
+                checked={showNumbers}
+                onChange={(e) => onShowNumbersChange(e.target.checked)}
+                disabled={isGenerating}
+              />
+              Show numbered circles (for testing)
+            </label>
+          </div>
+        )}
       </div>
     </div>
   );

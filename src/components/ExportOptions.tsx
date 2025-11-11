@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { downloadAllImages, downloadAsZip, shareAllImages, openImageInNewTab } from '../utils/exportUtils';
+import { downloadAllImages, downloadAsZip, shareAllImages, openImageInNewTab, generateFilename } from '../utils/exportUtils';
 import { detectPlatform, canShareFiles } from '../utils/platformDetection';
 import ExportInstructions from './ExportInstructions';
 import './ExportOptions.css';
@@ -9,13 +9,15 @@ interface ExportOptionsProps {
   isGenerating?: boolean;
   showNumbers: boolean;
   onShowNumbersChange: (show: boolean) => void;
+  title: string;
 }
 
 export default function ExportOptions({ 
   slides, 
   isGenerating,
   showNumbers,
-  onShowNumbersChange
+  onShowNumbersChange,
+  title
 }: ExportOptionsProps) {
   const [isExporting, setIsExporting] = useState(false);
   const [exportType, setExportType] = useState<'individual' | 'zip' | 'share' | null>(null);
@@ -38,7 +40,7 @@ export default function ExportOptions({
     setExportType('individual');
     
     try {
-      downloadAllImages(slides);
+      downloadAllImages(slides, title);
       // Small delay to show feedback
       await new Promise(resolve => setTimeout(resolve, 500));
       
@@ -62,7 +64,7 @@ export default function ExportOptions({
     setExportType('share');
     
     try {
-      await shareAllImages(slides);
+      await shareAllImages(slides, title);
     } catch (error) {
       console.error('Share error:', error);
       alert('Error sharing images. Please try again.');
@@ -83,7 +85,7 @@ export default function ExportOptions({
     setExportType('zip');
     
     try {
-      await downloadAsZip(slides);
+      await downloadAsZip(slides, title);
     } catch (error) {
       console.error('Export error:', error);
       alert('Error creating ZIP file. Please try again.');
@@ -205,20 +207,8 @@ export default function ExportOptions({
         </div>
       )}
 
-      <div className="export-options-controls">
-        <label className="export-checkbox-label">
-          <input
-            type="checkbox"
-            checked={showNumbers}
-            onChange={(e) => onShowNumbersChange(e.target.checked)}
-            disabled={isGenerating}
-          />
-          <span>Show numbered circles (for testing)</span>
-        </label>
-      </div>
-
       <div className="export-info">
-        <p>Files will be named: <code>carousel_01.jpg</code>, <code>carousel_02.jpg</code>, etc.</p>
+        <p>Files will be named: <code>{generateFilename(0, title)}</code>, <code>{generateFilename(1, title)}</code>, etc.</p>
       </div>
     </div>
   );
