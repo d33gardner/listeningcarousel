@@ -7,16 +7,12 @@ import './ExportOptions.css';
 interface ExportOptionsProps {
   slides: string[];
   isGenerating?: boolean;
-  showNumbers: boolean;
-  onShowNumbersChange: (show: boolean) => void;
   title: string;
 }
 
 export default function ExportOptions({ 
   slides, 
   isGenerating,
-  showNumbers,
-  onShowNumbersChange,
   title
 }: ExportOptionsProps) {
   const [isExporting, setIsExporting] = useState(false);

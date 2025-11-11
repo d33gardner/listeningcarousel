@@ -677,8 +677,6 @@ function App() {
           <ExportOptions
             slides={slides}
             isGenerating={isGenerating}
-            showNumbers={showNumbers}
-            onShowNumbersChange={setShowNumbers}
             title={title}
           />
         </div>
